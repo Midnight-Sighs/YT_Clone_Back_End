@@ -10,4 +10,4 @@ class Comments(models.Model):
 
 class Replies(models.Model):
     content = models.CharField(max_length= 150)
-    comment = models.ForeignKey('Comments', on_delete=models.CASCADE,)
+    comment = models.ForeignKey(Comments, on_delete=models.CASCADE,)

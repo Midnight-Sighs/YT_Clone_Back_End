@@ -31,13 +31,22 @@ class RepliesViews(APIView):
             raise status.HTTP_404_NOT_FOUND
 
     def get(self, request, pk): #get relative replies
-        comment = self.get_object(pk)
-        allreplies = Replies.objects.all()
-        relevantReplies = allreplies.filter(comment = comment.id)
-        return Response(relevantReplies)
+        replies = Replies.objects.all()
+        reply = replies.filter(comment_id=pk)
+        serializer = RepliesSerializer(reply, many=True)
+        return Response(serializer.data)
 
-    def post(self, comment, request): #reply to comment
-        return Response()
+    def post(self, request, pk): #reply to comment
+        commentpk = self.get_object(pk)
+        if request.method == "POST":
+            content = request.data
+            comment = commentpk
+            reply = Replies(content=content, comment=comment)
+            reply.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         
 class Likes(APIView):
 
@@ -74,5 +83,3 @@ class Dislikes(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-
-                  
