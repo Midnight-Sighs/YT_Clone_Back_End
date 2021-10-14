@@ -10,7 +10,7 @@ from rest_framework import status
 # Create your views here.
 class CommentsViews(APIView):
     
-    def get(self, request): #get all comments
+    def get(self, request): #get all relative comments
         comment = Comments.objects.all()
         serializer = CommentsSerializer(comment, many=True)
         return Response(serializer.data)
@@ -21,6 +21,12 @@ class CommentsViews(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class VideoComments(APIView):
+    def get(self, request, videoId): #get all relative comments
+        comment = Comments.objects.filter(videoId=videoId)
+        serializer = CommentsSerializer(comment, many=True)
+        return Response(serializer.data)
 
 class RepliesViews(APIView):
 
