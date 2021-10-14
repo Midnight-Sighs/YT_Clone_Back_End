@@ -24,12 +24,6 @@ class CommentsViews(APIView):
 
 class RepliesViews(APIView):
 
-    def get_object(self, pk):
-        try:
-            return Comments.objects.get(pk=pk)
-        except Comments.DoesNotExist:
-            raise status.HTTP_404_NOT_FOUND
-
     def get(self, request, pk): #get relative replies
         replies = Replies.objects.all()
         reply = replies.filter(comment_id=pk)
@@ -46,8 +40,7 @@ class RepliesViews(APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        
+      
 class Likes(APIView):
 
     def get_object(self, pk):
