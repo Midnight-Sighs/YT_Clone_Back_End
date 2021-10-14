@@ -24,16 +24,9 @@ class CommentsViews(APIView):
 
 class RepliesViews(APIView):
 
-    def get_object(self, pk):
-        try:
-            return Comments.objects.get(pk=pk)
-        except Comments.DoesNotExist:
-            raise status.HTTP_404_NOT_FOUND
-
     def get(self, request, pk): #get relative replies
-        comment = self.get_object(pk)
         replies = Replies.objects.all()
-        reply = replies.filter(comment_id=comment.id)
+        reply = replies.filter(comment_id=pk)
         serializer = RepliesSerializer(reply, many=True)
         return Response(serializer.data)
 
