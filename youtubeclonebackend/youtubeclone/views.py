@@ -32,12 +32,17 @@ class RepliesViews(APIView):
 
     def get(self, request, pk): #get relative replies
         comment = self.get_object(pk)
-        allreplies = Replies.objects.all()
-        relevantReplies = allreplies.filter(comment = comment.id)
-        return Response(relevantReplies)
+        replies = Replies.objects.all()
+        reply = replies.filter(comment_id=comment.id)
+        serializer = RepliesSerializer(reply, many=True)
+        return Response(serializer.data)
 
-    def post(self, comment, request): #reply to comment
-        return Response()
+    def post(self, request, pk): #reply to comment
+        serializer = RepliesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class Likes(APIView):
 
